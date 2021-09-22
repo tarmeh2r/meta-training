@@ -1,0 +1,23 @@
+From ac5dae476ee852e28d990cdad7a506d03ef75f0a Mon Sep 17 00:00:00 2001
+From: Tariq Mehmood <tariq_mehmood@mentor.com>
+Date: Tue, 14 Sep 2021 12:06:10 +0500
+Subject: [PATCH 1/5] device-name
+
+---
+ include/hw/arm/virt.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/hw/arm/virt.h b/include/hw/arm/virt.h
+index aad6d69841..c2dd000f62 100644
+--- a/include/hw/arm/virt.h
++++ b/include/hw/arm/virt.h
+@@ -81,6 +81,7 @@ enum {
+     VIRT_GPIO,
+     VIRT_SECURE_UART,
+     VIRT_SECURE_MEM,
++	   VIRT_FOO,
+     VIRT_PCDIMM_ACPI,
+     VIRT_ACPI_GED,
+     VIRT_NVDIMM_ACPI,
+-- 
+2.25.1

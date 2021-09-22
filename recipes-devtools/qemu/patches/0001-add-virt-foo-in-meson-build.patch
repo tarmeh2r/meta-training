@@ -1,0 +1,23 @@
+From 4cac8f6498bcc12e36f8876b2d13e2b8cf0b0d74 Mon Sep 17 00:00:00 2001
+From: Tariq Mehmood <tariq_mehmood@mentor.com>
+Date: Wed, 22 Sep 2021 20:11:24 +0500
+Subject: [PATCH] add virt foo in meson build
+
+---
+ hw/misc/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hw/misc/meson.build b/hw/misc/meson.build
+index 1cd48e8a0..09d399978 100644
+--- a/hw/misc/meson.build
++++ b/hw/misc/meson.build
+@@ -1,5 +1,5 @@
+ softmmu_ss.add(when: 'CONFIG_APPLESMC', if_true: files('applesmc.c'))
+-softmmu_ss.add(when: 'CONFIG_EDU', if_true: files('edu.c'))
++softmmu_ss.add(when: 'CONFIG_EDU', if_true: files('edu.c', 'virt_foo.c'))
+ softmmu_ss.add(when: 'CONFIG_FW_CFG_DMA', if_true: files('vmcoreinfo.c'))
+ softmmu_ss.add(when: 'CONFIG_ISA_DEBUG', if_true: files('debugexit.c'))
+ softmmu_ss.add(when: 'CONFIG_ISA_TESTDEV', if_true: files('pc-testdev.c'))
+-- 
+2.25.1
+

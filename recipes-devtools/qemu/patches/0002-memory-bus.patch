@@ -1,0 +1,23 @@
+From 2bc5f293d9c7d3452e33156fe647bc24c84fb642 Mon Sep 17 00:00:00 2001
+From: Tariq Mehmood <tariq_mehmood@mentor.com>
+Date: Tue, 14 Sep 2021 12:07:53 +0500
+Subject: [PATCH 2/5] memory-bus
+
+---
+ hw/arm/virt.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/hw/arm/virt.c b/hw/arm/virt.c
+index 27dbeb549e..141253387d 100644
+--- a/hw/arm/virt.c
++++ b/hw/arm/virt.c
+@@ -153,6 +153,7 @@ static const MemMapEntry base_memmap[] = {
+     [VIRT_NVDIMM_ACPI] =        { 0x09090000, NVDIMM_ACPI_IO_LEN},
+     [VIRT_PVTIME] =             { 0x090a0000, 0x00010000 },
+     [VIRT_MMIO] =               { 0x0a000000, 0x00000200 },
++	   [VIRT_FOO] =                { 0x0b000000, 0x00000200 },
+     /* ...repeating for a total of NUM_VIRTIO_TRANSPORTS, each of that size */
+     [VIRT_PLATFORM_BUS] =       { 0x0c000000, 0x02000000 },
+     [VIRT_SECURE_MEM] =         { 0x0e000000, 0x01000000 },
+-- 
+2.25.1

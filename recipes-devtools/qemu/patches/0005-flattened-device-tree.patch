@@ -1,0 +1,62 @@
+From eb4df8c43d510b3f50175a056454a6a577bb804e Mon Sep 17 00:00:00 2001
+From: Tariq Mehmood <tariq_mehmood@mentor.com>
+Date: Tue, 14 Sep 2021 12:24:52 +0500
+Subject: [PATCH 5/5] flattened-device-tree
+
+---
+ hw/arm/virt.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/hw/arm/virt.c b/hw/arm/virt.c
+index 9e2d1f1e51..61b81a2a7c 100644
+--- a/hw/arm/virt.c
++++ b/hw/arm/virt.c
+@@ -931,6 +931,37 @@ static void create_virtio_devices(const VirtMachineState *vms)
+     }
+ }
+ 
++static void create_virt_foo_device(const VirtMachineState *vms)
++{
++    hwaddr base = vms->memmap[VIRT_FOO].base;
++    hwaddr size = vms->memmap[VIRT_FOO].size;
++    int irq = vms->irqmap[VIRT_FOO];
++    char *nodename;
++
++    /*
++     * virt-foo@0b000000 {
++     *         compatible = "virt-foo";
++     *         reg = <0x0b000000 0x200>;
++     *         interrupt-parent = <&gic>;
++     *         interrupts = <176>;
++     * }
++     */
++
++    sysbus_create_simple("virt-foo", base, qdev_get_gpio_in(vms->gic, irq));
++
++    nodename = g_strdup_printf("/virt_foo@%" PRIx64, base);
++    qemu_fdt_add_subnode(vms->fdt, nodename);
++    qemu_fdt_setprop_string(vms->fdt, nodename, "compatible", "virt-foo");
++    qemu_fdt_setprop_sized_cells(vms->fdt, nodename, "reg", 2, base, 2, size);
++    qemu_fdt_setprop_cells(vms->fdt, nodename, "interrupt-parent",
++                           vms->gic_phandle);
++    qemu_fdt_setprop_cells(vms->fdt, nodename, "interrupts",
++                           GIC_FDT_IRQ_TYPE_SPI, irq,
++                           GIC_FDT_IRQ_FLAGS_LEVEL_HI);
++
++    g_free(nodename);
++}
++
+ #define VIRT_FLASH_SECTOR_SIZE (256 * KiB)
+ 
+ static PFlashCFI01 *virt_flash_create1(VirtMachineState *vms,
+@@ -1998,6 +2029,8 @@ static void machvirt_init(MachineState *machine)
+      * no backend is created the transport will just sit harmlessly idle.
+      */
+     create_virtio_devices(vms);
++    
++    create_virt_foo_device(vms);
+ 
+     vms->fw_cfg = create_fw_cfg(vms, &address_space_memory);
+     rom_set_fw(vms->fw_cfg);
+-- 
+2.25.1

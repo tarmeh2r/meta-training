@@ -1,0 +1,23 @@
+From f46c11789094bec8487cd58888134f6aa1cf5039 Mon Sep 17 00:00:00 2001
+From: Tariq Mehmood <tariq_mehmood@mentor.com>
+Date: Tue, 14 Sep 2021 12:09:17 +0500
+Subject: [PATCH 3/5] generating-interrupts
+
+---
+ hw/arm/virt.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/hw/arm/virt.c b/hw/arm/virt.c
+index 141253387d..9e2d1f1e51 100644
+--- a/hw/arm/virt.c
++++ b/hw/arm/virt.c
+@@ -193,6 +193,7 @@ static const int a15irqmap[] = {
+     [VIRT_GIC_V2M] = 48, /* ...to 48 + NUM_GICV2M_SPIS - 1 */
+     [VIRT_SMMU] = 74,    /* ...to 74 + NUM_SMMU_IRQS - 1 */
+     [VIRT_PLATFORM_BUS] = 112, /* ...to 112 + PLATFORM_BUS_NUM_IRQS -1 */
++	   [VIRT_FOO] = 176,
+ };
+ 
+ static const char *valid_cpus[] = {
+-- 
+2.25.1
