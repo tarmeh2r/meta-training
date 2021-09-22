@@ -17,6 +17,7 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+#include <linux/workqueue.h>
 
 #define REG_ID            0x0
 
@@ -33,7 +34,17 @@ struct virt_foo {
     struct device *dev;
     void __iomem *base;
     int count_irq;
+    struct work_struct w1;
 };
+
+static struct workqueue_struct *wq;
+void inc_count_irq(struct work_struct *work);
+
+void inc_count_irq(struct work_struct *work){
+  struct virt_foo *vf = container_of(work, struct virt_foo, w1);
+  vf->count_irq++;
+  printk(KERN_INFO "Interrupt Count is: %d\n", vf->count_irq);
+}
 
 static ssize_t vf_show_id(struct device *dev,
               struct device_attribute *attr, char *buf)
@@ -94,6 +105,8 @@ static const struct attribute_group vf_attr_group = {
 static void vf_init(struct virt_foo *vf)
 {
     vf->count_irq = 0;
+    wq = create_workqueue("my_wq");
+    INIT_WORK(&vf->w1, inc_count_irq);
     writel_relaxed(HW_ENABLE, vf->base + REG_INIT);
 }
 
@@ -106,12 +119,12 @@ static irqreturn_t vf_irq_handler(int irq, void *data)
 
     if (status & IRQ_ENABLED){
       dev_info(vf->dev, "HW is enabled\n");
-      vf->count_irq++;
+      queue_work(wq, &vf->w1);
     }
 
     if (status & IRQ_BUF_DEQ){
         dev_info(vf->dev, "Command buffer is dequeued\n");
-        vf->count_irq++;
+        queue_work(wq, &vf->w1);
     }
 
     return IRQ_HANDLED;
