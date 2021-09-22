@@ -68,12 +68,22 @@ static ssize_t vf_store_cmd(struct device *dev,
     return len;
 }
 
+static ssize_t vf_show_count_irq(struct device *dev,
+              struct device_attribute *attr, char *buf)
+{
+    struct virt_foo *vf = dev_get_drvdata(dev);
+
+    return scnprintf(buf, PAGE_SIZE, "Interrupt Count is: %d\n", vf->count_irq);
+}
+
 static DEVICE_ATTR(id, S_IRUGO, vf_show_id, NULL);
 static DEVICE_ATTR(cmd, S_IRUGO | S_IWUSR, vf_show_cmd, vf_store_cmd);
+static DEVICE_ATTR(count_irq, S_IRUGO, vf_show_count_irq, NULL);
 
 static struct attribute *vf_attributes[] = {
     &dev_attr_id.attr,
     &dev_attr_cmd.attr,
+    &dev_attr_count_irq.attr,
     NULL,
 };
 
@@ -103,7 +113,7 @@ static irqreturn_t vf_irq_handler(int irq, void *data)
         dev_info(vf->dev, "Command buffer is dequeued\n");
         vf->count_irq++;
     }
-    printk(KERN_INFO "Interrupt Count is: %d", vf->count_irq);
+
     return IRQ_HANDLED;
 }
 
