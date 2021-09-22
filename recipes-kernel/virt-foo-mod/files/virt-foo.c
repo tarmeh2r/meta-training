@@ -32,6 +32,7 @@
 struct virt_foo {
     struct device *dev;
     void __iomem *base;
+    int count_irq;
 };
 
 static ssize_t vf_show_id(struct device *dev,
@@ -82,6 +83,7 @@ static const struct attribute_group vf_attr_group = {
 
 static void vf_init(struct virt_foo *vf)
 {
+    vf->count_irq = 0;
     writel_relaxed(HW_ENABLE, vf->base + REG_INIT);
 }
 
@@ -92,12 +94,16 @@ static irqreturn_t vf_irq_handler(int irq, void *data)
 
     status = readl_relaxed(vf->base + REG_INT_STATUS);
 
-    if (status & IRQ_ENABLED)
-        dev_info(vf->dev, "HW is enabled\n");
+    if (status & IRQ_ENABLED){
+      dev_info(vf->dev, "HW is enabled\n");
+      vf->count_irq++;
+    }
 
-    if (status & IRQ_BUF_DEQ)
+    if (status & IRQ_BUF_DEQ){
         dev_info(vf->dev, "Command buffer is dequeued\n");
-
+        vf->count_irq++;
+    }
+    printk(KERN_INFO "Interrupt Count is: %d", vf->count_irq);
     return IRQ_HANDLED;
 }
 
